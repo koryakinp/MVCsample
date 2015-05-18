@@ -1,0 +1,160 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Schema Namespace="HospitalModel.Store" Provider="System.Data.SqlClient" ProviderManifestToken="2012" Alias="Self" xmlns:store="http://schemas.microsoft.com/ado/2007/12/edm/EntityStoreSchemaGenerator" xmlns:customannotation="http://schemas.microsoft.com/ado/2013/11/edm/customannotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm/ssdl">
+  <EntityType Name="Appointment">
+    <Key>
+      <PropertyRef Name="AppointmentId" />
+    </Key>
+    <Property Name="AppointmentId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="StartFrom" Type="datetime" />
+    <Property Name="EndTo" Type="datetime" />
+    <Property Name="HealthCareProviderId" Type="bigint" Nullable="false" />
+    <Property Name="PatientId" Type="bigint" />
+    <Property Name="NoShow" Type="bit" />
+    <Property Name="Cancelled" Type="bit" />
+    <Property Name="Active" Type="bit" />
+    <Property Name="DateEntered" Type="datetime" />
+    <Property Name="UserIdEntered" Type="bigint" />
+  </EntityType>
+  <EntityType Name="HealthCareProvider">
+    <Key>
+      <PropertyRef Name="HealthCareProviderId" />
+    </Key>
+    <Property Name="HealthCareProviderId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="50" />
+    <Property Name="Speciality" Type="nvarchar" MaxLength="50" />
+    <Property Name="RegistrationNumber" Type="nvarchar" MaxLength="50" />
+    <Property Name="Active" Type="bit" />
+    <Property Name="DateEntered" Type="datetime" />
+    <Property Name="UserIdEntered" Type="bigint" />
+    <Property Name="Username" Type="nvarchar" MaxLength="10" Nullable="false" />
+    <Property Name="Password" Type="nvarchar" MaxLength="10" Nullable="false" />
+  </EntityType>
+  <EntityType Name="Note">
+    <Key>
+      <PropertyRef Name="NoteId" />
+    </Key>
+    <Property Name="NoteId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="HealthCareProviderId" Type="bigint" Nullable="false" />
+    <Property Name="PatientId" Type="bigint" Nullable="false" />
+    <Property Name="Note" Type="nvarchar" MaxLength="500" />
+    <Property Name="NoteTypeId" Type="bigint" />
+    <Property Name="Active" Type="bit" />
+    <Property Name="DateEntered" Type="datetime" />
+    <Property Name="UserIdEntered" Type="bigint" />
+  </EntityType>
+  <EntityType Name="NoteType">
+    <Key>
+      <PropertyRef Name="NoteTypeId" />
+    </Key>
+    <Property Name="NoteTypeId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="Description" Type="nvarchar" MaxLength="50" />
+    <Property Name="Active" Type="bit" />
+    <Property Name="DateEntered" Type="datetime" />
+    <Property Name="UserIdEntered" Type="bigint" />
+  </EntityType>
+  <EntityType Name="Patient">
+    <Key>
+      <PropertyRef Name="PatientId" />
+    </Key>
+    <Property Name="PatientId" Type="bigint" StoreGeneratedPattern="Identity" Nullable="false" />
+    <Property Name="FirstName" Type="nvarchar" MaxLength="50" Nullable="false" />
+    <Property Name="LastName" Type="nvarchar" MaxLength="50" />
+    <Property Name="HealthCardNo" Type="nvarchar" MaxLength="50" />
+    <Property Name="Address1" Type="nvarchar" MaxLength="50" />
+    <Property Name="Address2" Type="nvarchar" MaxLength="50" />
+    <Property Name="HomePhone" Type="nvarchar" MaxLength="50" />
+    <Property Name="CellPhone" Type="nvarchar" MaxLength="50" />
+    <Property Name="DateOfBirth" Type="date" />
+    <Property Name="Active" Type="bit" />
+    <Property Name="DateEntered" Type="datetime" />
+    <Property Name="UserIdEntered" Type="bigint" />
+  </EntityType>
+  <Association Name="FK_Appointment_HealthCareProvider">
+    <End Role="HealthCareProvider" Type="Self.HealthCareProvider" Multiplicity="1" />
+    <End Role="Appointment" Type="Self.Appointment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HealthCareProvider">
+        <PropertyRef Name="HealthCareProviderId" />
+      </Principal>
+      <Dependent Role="Appointment">
+        <PropertyRef Name="HealthCareProviderId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Appointment_Patient">
+    <End Role="Patient" Type="Self.Patient" Multiplicity="0..1" />
+    <End Role="Appointment" Type="Self.Appointment" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patient">
+        <PropertyRef Name="PatientId" />
+      </Principal>
+      <Dependent Role="Appointment">
+        <PropertyRef Name="PatientId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Note_HealthCareProvider">
+    <End Role="HealthCareProvider" Type="Self.HealthCareProvider" Multiplicity="1" />
+    <End Role="Note" Type="Self.Note" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="HealthCareProvider">
+        <PropertyRef Name="HealthCareProviderId" />
+      </Principal>
+      <Dependent Role="Note">
+        <PropertyRef Name="HealthCareProviderId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Note_NoteType">
+    <End Role="NoteType" Type="Self.NoteType" Multiplicity="0..1" />
+    <End Role="Note" Type="Self.Note" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="NoteType">
+        <PropertyRef Name="NoteTypeId" />
+      </Principal>
+      <Dependent Role="Note">
+        <PropertyRef Name="NoteTypeId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <Association Name="FK_Note_Patient">
+    <End Role="Patient" Type="Self.Patient" Multiplicity="1" />
+    <End Role="Note" Type="Self.Note" Multiplicity="*" />
+    <ReferentialConstraint>
+      <Principal Role="Patient">
+        <PropertyRef Name="PatientId" />
+      </Principal>
+      <Dependent Role="Note">
+        <PropertyRef Name="PatientId" />
+      </Dependent>
+    </ReferentialConstraint>
+  </Association>
+  <EntityContainer Name="HospitalModelStoreContainer">
+    <EntitySet Name="Appointment" EntityType="Self.Appointment" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="HealthCareProvider" EntityType="Self.HealthCareProvider" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Note" EntityType="Self.Note" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="NoteType" EntityType="Self.NoteType" Schema="dbo" store:Type="Tables" />
+    <EntitySet Name="Patient" EntityType="Self.Patient" Schema="dbo" store:Type="Tables" />
+    <AssociationSet Name="FK_Appointment_HealthCareProvider" Association="Self.FK_Appointment_HealthCareProvider">
+      <End Role="HealthCareProvider" EntitySet="HealthCareProvider" />
+      <End Role="Appointment" EntitySet="Appointment" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Appointment_Patient" Association="Self.FK_Appointment_Patient">
+      <End Role="Patient" EntitySet="Patient" />
+      <End Role="Appointment" EntitySet="Appointment" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Note_HealthCareProvider" Association="Self.FK_Note_HealthCareProvider">
+      <End Role="HealthCareProvider" EntitySet="HealthCareProvider" />
+      <End Role="Note" EntitySet="Note" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Note_NoteType" Association="Self.FK_Note_NoteType">
+      <End Role="NoteType" EntitySet="NoteType" />
+      <End Role="Note" EntitySet="Note" />
+    </AssociationSet>
+    <AssociationSet Name="FK_Note_Patient" Association="Self.FK_Note_Patient">
+      <End Role="Patient" EntitySet="Patient" />
+      <End Role="Note" EntitySet="Note" />
+    </AssociationSet>
+  </EntityContainer>
+</Schema>
